@@ -30,7 +30,6 @@ def main():
     #                        csv_train_path, csv_validation_path, parches_dir, results_dir,\
     #                        './config/conf_encoder_2.csv','./config/conf_decoder_2.csv',\
     #                        crop_values=crop)
-    #
 
     pAE = projectAE.projectAE()
     pAE.run(n_epochs, latent_variable_dim, lr, batch_size, dim, csv_train_path,\
