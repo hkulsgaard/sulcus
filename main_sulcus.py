@@ -14,11 +14,11 @@ def main():
     freeze = 'False'
     dropout = 0
 
-    results_dir = './resultados_nn/project_nn_-6'
+    results_dir = './resultados_nn/project_nn_otra'
 
     data_dir = "./data"
-    csv_train_path = data_dir + "./train_cat_Mariana_parches.csv"
-    csv_validation_path = data_dir + "./validation_cat_Mariana_parches.csv"
+    csv_train_path = data_dir + "/train_cat_Mariana_parches.csv"
+    csv_validation_path = data_dir + "/validation_cat_Mariana_parches.csv"
     parches_dir= data_dir + "/parches_mariana_cat"
 
     config_encoder = './config/conf_encoder_2.csv'
@@ -29,22 +29,9 @@ def main():
     ############### MAIN SCRIPT ###############
     
     pSU = projectSulcus.projectSulcus()
-    pSU.run(n_epochs, 
-            lr, 
-            batch_size, 
-            dim,
-            patience,
-            factor_patience,
-            freeze,
-            dropout,
-            csv_train_path, 
-            csv_validation_path,
-            config_encoder,
-            config_decoder,
-            file_autoencoder,
-            parches_dir, 
-            results_dir, 
-            crop)
+    pSU.run(n_epochs, lr, batch_size, dim, patience, factor_patience, freeze, dropout,
+            csv_train_path, csv_validation_path, config_encoder, config_decoder,
+            file_autoencoder, parches_dir, results_dir, crop, False)
 
 
 if __name__ == '__main__':

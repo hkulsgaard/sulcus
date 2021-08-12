@@ -12,23 +12,9 @@ class projectSulcus(myProject.myProject):
     def __init__(self):
         super(projectSulcus,self).__init__()
 
-    def run(self, 
-            n_epochs, 
-            lr, 
-            batch_size, 
-            dim,
-            patience,
-            factor_patience,
-            freeze,
-            dropout,
-            csv_train_path, 
-            csv_validation_path,
-            config_encoder,
-            config_decoder,
-            file_autoencoder,
-            parches_dir, 
-            results_dir, 
-            crop_values=None):
+    def run(self, n_epochs, lr, batch_size, dim, patience, factor_patience, freeze, dropout, 
+            csv_train_path, csv_validation_path, config_encoder, config_decoder, 
+            file_autoencoder, parches_dir, results_dir, crop_values=None, verbose=False):
 
         # create results directory
         self.make_results_dir(results_dir)
@@ -81,7 +67,7 @@ class projectSulcus(myProject.myProject):
         except:
             checkpoint = None
 
-        model.train_model(data_loaders=data_loaders,data_lengths=data_lengths,results_dir=results_dir,n_epochs=n_epochs,verbose=False)
+        model.train_model(data_loaders=data_loaders,data_lengths=data_lengths,results_dir=results_dir,n_epochs=n_epochs,verbose=verbose)
 
         # Metrics plots
         plt.figure(1)

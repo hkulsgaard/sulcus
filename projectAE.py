@@ -13,7 +13,7 @@ class projectAE(myProject.myProject):
 
     def run(self, n_epochs, latent_variable_dim, lr, batch_size, dim,\
         csv_train_path, csv_validation_path, parches_dir, results_dir,\
-        csv_config_encoder, csv_config_decoder, crop_values=None):
+        csv_config_encoder, csv_config_decoder, crop_values=None, verbose=False):
 
         ###################### INITIAL SETUP ######################
         self.make_results_dir(results_dir)
@@ -26,8 +26,9 @@ class projectAE(myProject.myProject):
 
 
         #autoencoder creation
+        criterion = nn.BCELoss()
         ae = autoencoder.Autoencoder(conf_file_encoder=csv_config_encoder, conf_file_decoder=csv_config_decoder,\
-                                                                    prob_dropout=0, criterion=nn.BCELoss(),lr=lr)
+                                                                    prob_dropout=0,criterion=criterion ,lr=lr)
         ae = ae.cuda()
         print(ae)
         summary(ae, (1,64,64,32))
@@ -43,8 +44,9 @@ class projectAE(myProject.myProject):
             ae.load_from_checkpoint(checkpoint)
         except:
             checkpoint = None
+            print('[INFO]No checkpoint restored')
 
         #autoencoder training
-        ae.train_model(data_loaders=data_loaders, data_lengths=data_lengths,results_dir=results_dir,n_epochs=n_epochs,verbose=False)
+        ae.train_model(data_loaders=data_loaders, data_lengths=data_lengths,results_dir=results_dir,n_epochs=n_epochs,verbose=verbose)
 
         print('\n[INFO]Job done!\n')

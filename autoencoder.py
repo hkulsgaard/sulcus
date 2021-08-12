@@ -140,7 +140,7 @@ class Block_decoder_sigmoid(nn.Module):
 #########################        
     
 class Autoencoder(myModule.myModule):
-    def __init__(self,conf_file_encoder,conf_file_decoder,criterion,prob_dropout=0,lr=None):
+    def __init__(self,conf_file_encoder,conf_file_decoder,criterion=None,prob_dropout=0,lr=None):
         super(Autoencoder,self).__init__(criterion,lr)
         self.encoder = Encoder(conf_file_encoder,prob_dropout=prob_dropout)
         self.decoder = Decoder(conf_file_decoder,prob_dropout=prob_dropout)

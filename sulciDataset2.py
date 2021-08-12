@@ -2,7 +2,6 @@ import torch
 import pandas as pd
 import os
 import numpy as np
-import matplotlib.pyplot as plt
 from torch.utils.data import Dataset
 import nibabel as nib
 
@@ -33,10 +32,9 @@ class sulciDataset(Dataset):
     def __getitem__(self,idx):
         #img_name= os.path.join(self.root_dir, self.frame.iloc[idx,0])
         img_name = os.path.join(self.root_dir, self.get_fpath(idx))
-        label = self.frame.iloc[idx,2]
-        #label=self.frame.iloc[idx,1]#<<<<<<<<<<<<<<<<<<<<<<<<<<asi va en colab (actualizar archivos de paths)
+        label = self.get_label(idx)
         
-        img = nib.load(img_name)
+        #img = nib.load(img_name)
         img = nib.load(img_name).get_fdata()
         
         #img = np.swapaxes(img,-1,0)
@@ -73,11 +71,15 @@ class sulciDataset(Dataset):
         return img, label
     
     def get_fname(self,idx):
-        return self.frame.iloc[idx,1]
+        return self.frame.iloc[idx,2]
         #return self.frame.iloc[idx,0]#<<<<<<<<<<<<<<<<<<<<<<<<<<asi va en colab (actualizar archivos de paths)
 
     def get_fpath(self,idx):
-        return (str(self.frame.iloc[idx,0]) + str(self.frame.iloc[idx,1]))
-        #return str(self.frame.iloc[idx,0])#<<<<<<<<<<<<<<<<<<<<<<<<<<asi va en colab (actualizar archivos de paths)
+        #return (str(self.frame.iloc[idx,0]) + str(self.frame.iloc[idx,1]))
+        #return str(self.frame.iloc[idx,0])
+        return self.frame.iloc[idx,0]
+
+    def get_label(self,idx):
+        return self.frame.iloc[idx,1]
 
     

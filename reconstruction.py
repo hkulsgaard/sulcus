@@ -17,16 +17,15 @@ import numpy as np
 #Parameters
 phase = 'validation'
 img_type = ''                 # '_gm' or empty
-hemisphere = '_healthy'          # '_left', '_right' or empty                                                 #root directory where code is located
+hemisphere = ''          # '_left', '_right' or empty                                                 #root directory where code is located
 sufix = img_type + hemisphere
 data_dir = './data'
 file_pretrained = './resultados_hk/cat12{}_16x32x32_lr1e-04/'.format(sufix)           #ruta modelo que quiero importar
-pretrained_fname = 'bestModel.pt'
+pretrained_fname = 'best_model.pt'
 batch_size = 1
 file_encoder = './config/conf_encoder_2.csv'                       #Configuración encoder
 file_decoder = './config/conf_decoder_2.csv'                       #Configuración decoder
-#csv_file_dataset = data_dir +  '/' + phase + '_MSU_cat12' + sufix + '.csv'   #Csv con ruta imágenes
-csv_file_dataset = data_dir +  '/' + phase + '_oasis_cat12' + sufix + '.csv'   #Csv con ruta imágenes
+csv_file_dataset = data_dir +  '/' + phase + '_MSU_cat12' + sufix + '.csv'   #Csv con ruta imágenes
 root_dir_dataset = data_dir + '/parches_cat12' + img_type          #Carpeta con imágenes
 results_dir = file_pretrained + 'reconstruction' + sufix
 
@@ -59,7 +58,7 @@ scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True, 
 
 if pretrained is not None:
     print('[INFO] Loading model...')
-    epoch_=pretrained['epoch']
+    epoch=pretrained['epoch']
     autoencoder.load_state_dict(pretrained['model_state_dict'])
     optimizer.load_state_dict(pretrained['optimizer_state_dict'])
     scheduler.load_state_dict(pretrained['scheduler_state_dict'])
@@ -78,8 +77,7 @@ dataset = sulciDataset2.sulciDataset(csv_file=csv_file_dataset, root_dir=root_di
 dataLoader = DataLoader(dataset, batch_size=1, shuffle=False)
 
 #Main loop
-s = 0
-my_range = [0,417] #exact range of images id for reconstruction
+my_range = [0,2] #exact range of images id for reconstruction
 print('[INFO] Reconstructing...')
 for batch_id, batch_data in enumerate(dataLoader):
     if (batch_id>=my_range[0]) and (batch_id<=my_range[1]):
@@ -98,14 +96,13 @@ for batch_id, batch_data in enumerate(dataLoader):
         #Guardo resultados
 
         img = nib.Nifti1Image(volume[0,0,:,:,:].cpu().numpy(),np.eye(4))
-        #nib.save(img,fname_ori_img)
+        nib.save(img,fname_ori_img)
         
-        #res = nib.Nifti1Image(x_hat[0,0,:,:,:].cpu().detach().numpy(),np.eye(4))
-        #nib.save(res,fname_rec_img)
+        img_res = nib.Nifti1Image(x_hat[0,0,:,:,:].cpu().detach().numpy(),np.eye(4))
+        nib.save(img_res,fname_rec_img)
         
-        #dif = nib.Nifti1Image(np.abs(img.dataobj-res.dataobj),np.eye(4))
-        
-        #nib.save(dif,fname_sub_img)
+        img_sub = nib.Nifti1Image(np.abs(img.dataobj-img_res.dataobj),np.eye(4))
+        nib.save(img_sub,fname_sub_img)
 
         print('[INFO] Subject: {} | Shape: {} | Name: {} | embedding: {}'.format(batch_id,img.shape,fname,h.shape))
         
@@ -118,9 +115,10 @@ for batch_id, batch_data in enumerate(dataLoader):
             hh_np = np.vstack((hh_np,h_np))
         except:
             hh_np = h_np
-   
-hh_df = pd.DataFrame(hh_np)
-hh_df.to_csv('embeddings.csv', index=False, header=False)
+
+#Save embeddings(h) into a CSV file
+#hh_df = pd.DataFrame(hh_np)
+#hh_df.to_csv('embeddings.csv', index=False, header=False)
     
 print('[INFO] Job done!')
 

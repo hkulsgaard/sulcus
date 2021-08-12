@@ -1,12 +1,11 @@
 import numpy as np
 from torch.utils.data import  DataLoader
 from torch import nn as nn
-import torch
 from torch import optim as optim
 import torchio as tio
 import os
 import sulciDataset2
-import winsound
+#import winsound
 
 class myProject():
     

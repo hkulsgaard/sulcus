@@ -1,5 +1,4 @@
 import torch
-from torch import optim
 from torch import nn
 import os
 import time
@@ -24,7 +23,7 @@ class myModule(nn.Module):
         self.scheduler = scheduler
 
     def load_from_checkpoint(self, checkpoint=None):
-       
+        
         self.load_state_dict(checkpoint['model_state_dict'])
         self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
@@ -36,7 +35,7 @@ class myModule(nn.Module):
         self.best_loss = checkpoint['best_loss']
         #lr = checkpoint['lr']
 
-        print('[INFO]Last_epoch:{} | Last saved epoch:{} | Best loss: {})'.format(self.last_epoch,self.last_saved_epoch,self.best_loss))
+        print('[INFO]Checkpoint restored-> Last_epoch:{} | Last saved epoch:{} | Best loss: {})'.format(self.last_epoch,self.last_saved_epoch,self.best_loss))
 
     def train_model(self, data_loaders, data_lengths, results_dir, n_epochs, verbose=True):
         
@@ -98,8 +97,8 @@ class myModule(nn.Module):
         print('[INFO]Job done -> Total time: {} sec ({:.1f} min)'.format(int(elapsed_total),float(elapsed_total/60)))
 
     def build_plot(self,data,data_name,ylim=None,results_dir=None ,verbose=True):
-        plt.plot(data['train'])
-        plt.plot(data['val'])
+        plt.plot(data['train'], color='#0b97e3')
+        plt.plot(data['val'], color='#e3bb0b')
         plt.legend(['Training '+data_name,'Validation '+data_name])
         plt.xlabel('Epoch')
         plt.ylabel(data_name)
@@ -111,7 +110,6 @@ class myModule(nn.Module):
         if verbose:
             plt.show()
         
-
     def calculate_epoch_metrics(self,phase):
         #place holder
         return 0
@@ -121,25 +119,19 @@ class myModule(nn.Module):
         if (epoch_loss < self.best_loss):
             self.best_loss = epoch_loss
             self.last_saved_epoch = epoch
-            torch.save({
-                #'epoch':epoch,
-                'last_epoch': epoch,
-                'last_saved_epoch' : self.last_saved_epoch,
-                'model_state_dict': self.state_dict(),
-                'optimizer_state_dict': self.optimizer.state_dict(),
-                'loss': epoch_loss,
-                'best_loss' : self.best_loss,
-                'losses': self.losses,
-                'scheduler_state_dict':self.scheduler.state_dict(),
-                'learning_rate': self.lr,
-                }, results_dir + '/best_model.pt')
-            
+            best_model = self.build_best_model(epoch,epoch_loss)
+            torch.save(best_model, results_dir + '/best_model.pt')
             print('[INFO]Best model saved')
         else:
             print('[INFO]Epoch #{} worst loss than epoch #{}'.format(epoch,self.last_saved_epoch))
 
     def save_checkpoint(self,epoch,epoch_loss,results_dir):
-        torch.save({
+        checkpoint = self.build_checkpoint(epoch,epoch_loss)
+        torch.save(checkpoint, results_dir + '/checkpoint_epoch_{}.pt'.format(epoch))
+        print('[INFO]Checkpoing epoch #{} saved'.format(epoch))
+
+    def build_checkpoint(self,epoch,epoch_loss):
+        checkpoint = {
             'model_state_dict': self.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
             'loss': epoch_loss,
@@ -150,8 +142,19 @@ class myModule(nn.Module):
             'last_saved_epoch' : self.last_saved_epoch,
             'losses' : self.losses,
             'best_loss' : self.best_loss,
-            }, results_dir + '/checkpoint_epoch_{}.pt'.format(epoch))
-        print('[INFO]Checkpoing epoch #{} saved'.format(epoch))
+            }
+        return checkpoint
+    
+    def build_best_model(self,epoch,epoch_loss):
+        best_model = {
+            'model_state_dict': self.state_dict(),
+            'optimizer_state_dict': self.optimizer.state_dict(),
+            'epoch': epoch,
+            'loss': epoch_loss,
+            'scheduler_state_dict': self.scheduler.state_dict(),
+            'learning_rate': self.lr,
+            }
+        return best_model
 
     def delete_checkpoint(self,epoch,results_dir):
         try: 

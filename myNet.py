@@ -83,3 +83,14 @@ class MyNet(myModule.myModule):
 
         return self.criterion(y_hat, b_labels)
 
+    def build_checkpoint(self,epoch,epoch_loss):
+        checkpoint = super(MyNet, self).build_checkpoint(epoch,epoch_loss)
+        checkpoint.update({'aucs':self.aucs, 'accuracies':self.accuracies})
+        return checkpoint
+
+    def load_from_checkpoint(self, checkpoint=None):
+        super(MyNet, self).load_from_checkpoint(checkpoint)
+        self.aucs = checkpoint['aucs']
+        self.accuracies = checkpoint['accuracies']
+
+    
