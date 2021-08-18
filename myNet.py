@@ -60,10 +60,10 @@ class MyNet(myModule.myModule):
         
         auc = roc_auc_score(y_true=self.labels[phase], y_score=self.y_hats[phase])
         self.aucs[phase].append(auc)
-        print('AUC', auc)
+        print('[INFO]AUC',phase+':', auc)
         
         accuracy = accuracy_score(y_true = self.labels[phase], y_pred = self.y_hats[phase]) 
-        print('ACC', accuracy)
+        print('[INFO]ACC',phase+':', accuracy)
         self.accuracies[phase].append(accuracy)
 
     def calculate_loss(self,b_volumes,b_labels,phase):
@@ -92,5 +92,26 @@ class MyNet(myModule.myModule):
         super(MyNet, self).load_from_checkpoint(checkpoint)
         self.aucs = checkpoint['aucs']
         self.accuracies = checkpoint['accuracies']
+
+    def load_from_checkpoint_2(self, path=None):
+        try:
+            checkpoint = torch.load(path[0])
+
+            self.load_state_dict(checkpoint['model_state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+            
+            self.last_epoch = checkpoint['last_epoch']
+            self.last_saved_epoch = checkpoint['last_saved_epoch']
+            self.best_loss = checkpoint['best_loss']
+
+            self.losses = checkpoint['losses']
+            self.aucs = checkpoint['aucs']
+            self.accuracies = checkpoint['accuracies']
+        
+            print('[INFO]Checkpoint restored-> Last_epoch:{} | Last saved epoch:{} | Best loss: {})'.format(self.last_epoch,self.last_saved_epoch,self.best_loss))
+
+        except:
+            print('[INFO]Cannot restore checkpoint')
 
     

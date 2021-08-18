@@ -14,21 +14,27 @@ import torchio as tio
 import pandas as pd
 import numpy as np
 
-#Parameters
+#FLAGS---------------------------------------------------------------------
+save_reconstruction_images = 0
+save_embeddings = 1
+n_samples = 1590 #number of samples to reconstruct
+
+#PARAMETERS----------------------------------------------------------------
 phase = 'validation'
 img_type = ''                 # '_gm' or empty
 hemisphere = ''          # '_left', '_right' or empty                                                 #root directory where code is located
 sufix = img_type + hemisphere
 data_dir = './data'
-file_pretrained = './resultados_hk/cat12{}_16x32x32_lr1e-04/'.format(sufix)           #ruta modelo que quiero importar
+file_pretrained = './resultados_hk/OASIS_v0_16x32x32_lr1e-04/'.format(sufix)           #ruta modelo que quiero importar
 pretrained_fname = 'best_model.pt'
 batch_size = 1
 file_encoder = './config/conf_encoder_2.csv'                       #Configuración encoder
 file_decoder = './config/conf_decoder_2.csv'                       #Configuración decoder
-csv_file_dataset = data_dir +  '/' + phase + '_MSU_cat12' + sufix + '.csv'   #Csv con ruta imágenes
+#csv_file_dataset = data_dir +  '/' + phase + '_MSU_cat12' + sufix + '.csv'   #Csv con ruta imágenes
+csv_file_dataset = data_dir +  '/OASIS_v0_test.csv'   #Csv con ruta imágenes
 root_dir_dataset = data_dir + '/parches_cat12' + img_type          #Carpeta con imágenes
-results_dir = file_pretrained + 'reconstruction' + sufix
-
+results_dir = file_pretrained + 'reconstruction_OASIS' + sufix
+#--------------------------------------------------------------------------
 
 try:
     os.mkdir(results_dir)
@@ -51,6 +57,7 @@ autoencoder = autoencoder.cuda()
 try:
     pretrained = torch.load(file_pretrained)
 except:
+    print('[WARNING] Pre-trained model not loaded')
     pass
 
 optimizer = optim.Adam(list(autoencoder.parameters()), lr=lr)
@@ -77,7 +84,7 @@ dataset = sulciDataset2.sulciDataset(csv_file=csv_file_dataset, root_dir=root_di
 dataLoader = DataLoader(dataset, batch_size=1, shuffle=False)
 
 #Main loop
-my_range = [0,2] #exact range of images id for reconstruction
+my_range = [0,n_samples] #exact range of images id for reconstruction
 print('[INFO] Reconstructing...')
 for batch_id, batch_data in enumerate(dataLoader):
     if (batch_id>=my_range[0]) and (batch_id<=my_range[1]):
@@ -89,36 +96,40 @@ for batch_id, batch_data in enumerate(dataLoader):
         #Abro una imagen, la paso por autoencoder y calculo la diferencia entre ambas
         volume, label = batch_data
         volume = volume.to(device)
-        h , x_hat = autoencoder(volume)
+        h , x_hat = autoencoder.predict(volume)
         
         dim = (volume.size())
-        
-        #Guardo resultados
 
-        img = nib.Nifti1Image(volume[0,0,:,:,:].cpu().numpy(),np.eye(4))
-        nib.save(img,fname_ori_img)
-        
-        img_res = nib.Nifti1Image(x_hat[0,0,:,:,:].cpu().detach().numpy(),np.eye(4))
-        nib.save(img_res,fname_rec_img)
-        
-        img_sub = nib.Nifti1Image(np.abs(img.dataobj-img_res.dataobj),np.eye(4))
-        nib.save(img_sub,fname_sub_img)
+        #Save reconstruction image results
+        if save_reconstruction_images:
+            img = nib.Nifti1Image(volume[0,0,:,:,:].cpu().numpy(),np.eye(4))
+            nib.save(img,fname_ori_img)
+            
+            img_res = nib.Nifti1Image(x_hat[0,0,:,:,:].cpu().detach().numpy(),np.eye(4))
+            nib.save(img_res,fname_rec_img)
+            
+            img_sub = nib.Nifti1Image(np.abs(img.dataobj-img_res.dataobj),np.eye(4))
+            nib.save(img_sub,fname_sub_img)
 
-        print('[INFO] Subject: {} | Shape: {} | Name: {} | embedding: {}'.format(batch_id,img.shape,fname,h.shape))
+            print('[INFO] Subject: {} | Shape: {} | Name: {} | embedding: {}'.format(batch_id,img.shape,fname,h.shape))
         
-        #stacking the embeddings into a 2D matrix (to save later into a csv file)
-        torch.cuda.synchronize()
-        h = torch.flatten(h)
-        h_np = h.cpu().detach().numpy()
-        #h_np = h_np.reshape(1,(int(h_np.size)))
-        try:
-            hh_np = np.vstack((hh_np,h_np))
-        except:
-            hh_np = h_np
+        #Stack the embeddings into a 2D matrix (to save later into a csv file)
+        if save_embeddings==1:
+            torch.cuda.synchronize()
+            h = torch.flatten(h)
+            h_np = h.cpu().detach().numpy()
+            #h_np = h_np.reshape(1,(int(h_np.size)))
+            try:
+                hh_np = np.vstack((hh_np,h_np))
+            except:
+                hh_np = h_np
+            
+            print('[INFO] Subject: {} | Name: {}'.format(batch_id,fname))
 
 #Save embeddings(h) into a CSV file
-#hh_df = pd.DataFrame(hh_np)
-#hh_df.to_csv('embeddings.csv', index=False, header=False)
+if save_embeddings==1:
+    hh_df = pd.DataFrame(hh_np)
+    hh_df.to_csv(results_dir+'/embeddings.csv', index=False, header=False)
     
 print('[INFO] Job done!')
 

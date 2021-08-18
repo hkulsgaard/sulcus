@@ -4,7 +4,7 @@ import projectAE
 
 def main():
     ############### PARAMETERS ###############
-    n_epochs = 175                      # times to run the model on complete data
+    n_epochs = 3                      # times to run the model on complete data
     latent_variable_dim = 16            # latent vector dimension
     lr = 1e-4                           # learning_rate
     batch_size = 8                      # number of data points in each batch

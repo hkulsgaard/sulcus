@@ -136,4 +136,5 @@ embeddings/
 resultados_hk/
 resultados_db/
 resultados_nn/
+pruebas/
 *prueba*.py

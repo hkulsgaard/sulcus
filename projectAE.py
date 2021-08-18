@@ -26,7 +26,7 @@ class projectAE(myProject.myProject):
 
 
         #autoencoder creation
-        criterion = nn.BCELoss()
+        criterion = nn.BCEWithLogitsLoss()
         ae = autoencoder.Autoencoder(conf_file_encoder=csv_config_encoder, conf_file_decoder=csv_config_decoder,\
                                                                     prob_dropout=0,criterion=criterion ,lr=lr)
         ae = ae.cuda()
@@ -38,13 +38,7 @@ class projectAE(myProject.myProject):
         ae.set_scheduler(scheduler)
 
         #checkpoint restoring
-        checkpoint_path = glob.glob(results_dir + "/checkpoint_epoch*.pt")
-        try:
-            checkpoint = torch.load(checkpoint_path[0])
-            ae.load_from_checkpoint(checkpoint)
-        except:
-            checkpoint = None
-            print('[INFO]No checkpoint restored')
+        ae.load_from_checkpoint_2(glob.glob(results_dir + "/checkpoint_epoch*.pt"))
 
         #autoencoder training
         ae.train_model(data_loaders=data_loaders, data_lengths=data_lengths,results_dir=results_dir,n_epochs=n_epochs,verbose=verbose)

@@ -23,19 +23,51 @@ class myModule(nn.Module):
         self.scheduler = scheduler
 
     def load_from_checkpoint(self, checkpoint=None):
+            self.load_state_dict(checkpoint['model_state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+            
+            self.last_epoch = checkpoint['last_epoch']
+            self.last_saved_epoch = checkpoint['last_saved_epoch']
+            self.losses = checkpoint['losses']
+            self.best_loss = checkpoint['best_loss']
+            #lr = checkpoint['lr']
         
-        self.load_state_dict(checkpoint['model_state_dict'])
-        self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
-        
-        #new
-        self.last_epoch = checkpoint['last_epoch']
-        self.last_saved_epoch = checkpoint['last_saved_epoch']
-        self.losses = checkpoint['losses']
-        self.best_loss = checkpoint['best_loss']
-        #lr = checkpoint['lr']
+            print('[INFO]Checkpoint restored-> Last_epoch:{} | Last saved epoch:{} | Best loss: {})'.format(self.last_epoch,self.last_saved_epoch,self.best_loss))
 
-        print('[INFO]Checkpoint restored-> Last_epoch:{} | Last saved epoch:{} | Best loss: {})'.format(self.last_epoch,self.last_saved_epoch,self.best_loss))
+    def load_from_checkpoint_2(self, path=None):
+        try:
+            checkpoint = torch.load(path[0])
+
+            self.load_state_dict(checkpoint['model_state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+            
+            self.last_epoch = checkpoint['last_epoch']
+            self.last_saved_epoch = checkpoint['last_saved_epoch']
+            self.losses = checkpoint['losses']
+            self.best_loss = checkpoint['best_loss']
+            #lr = checkpoint['lr']
+        
+            print('[INFO]Checkpoint restored-> Last_epoch:{} | Last saved epoch:{} | Best loss: {})'.format(self.last_epoch,self.last_saved_epoch,self.best_loss))
+
+        except:
+            print('[INFO]Cannot restore checkpoint')
+
+    def load_from_best_model(self, path):
+        try:
+            best_model = torch.load(path)
+
+            self.load_state_dict(best_model['model_state_dict'])
+            self.optimizer.load_state_dict(best_model['optimizer_state_dict'])
+            self.scheduler.load_state_dict(best_model['scheduler_state_dict'])
+            
+            self.last_epoch = best_model['last_epoch']
+            self.losses = best_model['losses']
+            self.best_loss = best_model['best_loss']
+        
+        except:
+            print('[INFO]Cannot load the model')
 
     def train_model(self, data_loaders, data_lengths, results_dir, n_epochs, verbose=True):
         
@@ -49,7 +81,6 @@ class myModule(nn.Module):
                 
                 if phase == 'train':
                     self.train()
-                
                 else:
                     self.eval()
 
@@ -75,7 +106,8 @@ class myModule(nn.Module):
                 print('[INFO]Epoch #{} loss: {}'.format(epoch,epoch_loss))                                       
                 self.scheduler.step(epoch_loss)
 
-            self.calculate_epoch_metrics(phase)
+                #calculate metrics for training and validation
+                self.calculate_epoch_metrics(phase)
 
             #save best model if we got better loss
             self.save_best_model(epoch,epoch_loss,results_dir)
@@ -134,25 +166,35 @@ class myModule(nn.Module):
         checkpoint = {
             'model_state_dict': self.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
-            'loss': epoch_loss,
             'scheduler_state_dict': self.scheduler.state_dict(),
             'learning_rate': self.lr,
-            #new
+            
             'last_epoch': epoch,
             'last_saved_epoch' : self.last_saved_epoch,
             'losses' : self.losses,
             'best_loss' : self.best_loss,
+            'epoch_loss': epoch_loss,
             }
         return checkpoint
     
     def build_best_model(self,epoch,epoch_loss):
         best_model = {
+            #'model_state_dict': self.state_dict(),
+            #'optimizer_state_dict': self.optimizer.state_dict(),
+            #'epoch': epoch,
+            #'loss': epoch_loss,
+            #'scheduler_state_dict': self.scheduler.state_dict(),
+            #'learning_rate': self.lr,
+
             'model_state_dict': self.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
-            'epoch': epoch,
-            'loss': epoch_loss,
             'scheduler_state_dict': self.scheduler.state_dict(),
             'learning_rate': self.lr,
+
+            'last_epoch': epoch,
+            'last_saved_epoch' : self.last_saved_epoch,
+            'best_loss': epoch_loss,
+            'losses' : self.losses,
             }
         return best_model
 

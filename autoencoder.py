@@ -70,12 +70,11 @@ class Decoder(nn.Module):
         self.blocks = nn.ModuleList()
         rows = conf_file.shape[0]
         
-        for i in range(0,rows-1):
-            
+        for i,j in conf_file.iterrows():
+          
             self.blocks.append(Block_decoder(conf_file.iloc[i,0], conf_file.iloc[i,1], conf_file.iloc[i,2], conf_file.iloc[i,3], prob_dropout=prob_dropout))
  
-        self.blocks.append(Block_decoder_sigmoid(conf_file.iloc[rows-1,0], conf_file.iloc[rows-1,1], conf_file.iloc[rows-1,2], conf_file.iloc[rows-1,3], prob_dropout=prob_dropout))
-        
+          
     
     def forward(self, input):
         x_hat = input  
@@ -113,7 +112,7 @@ class Block_decoder(nn.Module):
 
 ###### Bloque decoder final######
         
-class Block_decoder_sigmoid(nn.Module):
+""" class Block_decoder_sigmoid(nn.Module):
     def __init__(self, in_channels_1, out_channels_1, in_channels_2, out_channels_2, kernel_size_conv1=3,kernel_size_conv2=3, prob_dropout=0):
         super(Block_decoder_sigmoid,self).__init__()
         self.conv1 = nn.Conv3d(in_channels=in_channels_1, out_channels=out_channels_1, kernel_size=kernel_size_conv1, padding=1)
@@ -133,7 +132,7 @@ class Block_decoder_sigmoid(nn.Module):
         x_hat = self.s(x_hat)
        
         
-        return x_hat
+        return x_hat """
 
 #########################
 ###### Autoencoder ######
@@ -160,3 +159,8 @@ class Autoencoder(myModule.myModule):
     def calculate_epoch_metrics(self,phase):
         #place holder
         return 0
+
+    def predict(self,input):
+        h, x_hat = self(input)
+        
+        return h, nn.functional.sigmoid(x_hat)

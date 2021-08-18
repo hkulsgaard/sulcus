@@ -47,6 +47,7 @@ class myProject():
 
     def play_finish_sound(self):
         try:
-            winsound.PlaySound("*", winsound.SND_ALIAS)
+            #winsound.PlaySound("*", winsound.SND_ALIAS)
+            a=1
         except:
             pass

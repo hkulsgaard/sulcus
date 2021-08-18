@@ -14,7 +14,7 @@ class projectSulcus(myProject.myProject):
 
     def run(self, n_epochs, lr, batch_size, dim, patience, factor_patience, freeze, dropout, 
             csv_train_path, csv_validation_path, config_encoder, config_decoder, 
-            file_autoencoder, parches_dir, results_dir, crop_values=None, verbose=False):
+            ae_path, parches_dir, results_dir, crop_values=None, verbose=False):
 
         # create results directory
         self.make_results_dir(results_dir)
@@ -40,8 +40,7 @@ class projectSulcus(myProject.myProject):
         pretrained_model.set_optimizer(optimizer)
         pretrained_model.set_scheduler(scheduler)
 
-        ae_path = torch.load(file_autoencoder)
-        pretrained_model.load_from_checkpoint(ae_path)
+        pretrained_model.load_from_best_model(ae_path)
 
         pretrained_dict = pretrained_model.state_dict()
         encoder_dict = encoder.state_dict()
@@ -60,12 +59,8 @@ class projectSulcus(myProject.myProject):
         model.set_optimizer(model_optimizer)
         model.set_scheduler(model_scheduler)
 
-        checkpoint_path = glob.glob(results_dir + "/checkpoint_epoch*.pt")
-        try:
-            checkpoint = torch.load(checkpoint_path[0])
-            model.load_from_checkpoint(checkpoint)
-        except:
-            checkpoint = None
+        pppath = glob.glob(results_dir + "/checkpoint_epoch*.pt")
+        model.load_from_checkpoint_2(glob.glob(results_dir + "/checkpoint_epoch*.pt"))
 
         model.train_model(data_loaders=data_loaders,data_lengths=data_lengths,results_dir=results_dir,n_epochs=n_epochs,verbose=verbose)
 
@@ -77,5 +72,6 @@ class projectSulcus(myProject.myProject):
         plt.figure(3)
         model.build_plot(data=model.accuracies,data_name='Accuracy',ylim=1.1,verbose=True,results_dir=results_dir)
         plt.show()
+        
 
         print('\n[INFO]Job done!\n')
