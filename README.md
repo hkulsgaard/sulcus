@@ -16,6 +16,6 @@
 ## Slurm configuration
   List of availeable GPU's for CUDA in our server:
   
-- GM200 (Titan X)
+- GM200 (GTX TITAN X)
 - TU104 (RTX 2080 SUPER)
   
