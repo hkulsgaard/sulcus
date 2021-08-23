@@ -13,3 +13,9 @@
   conda install pandas
   conda install -c daveeloo torchsummary
   ```
+## Slurm configuration
+  List of availeable GPU's for CUDA in our server:
+  
+- GM200 (Titan X)
+- TU104 (RTX 2080 SUPER)
+  
