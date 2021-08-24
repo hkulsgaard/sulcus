@@ -15,25 +15,23 @@ import pandas as pd
 import numpy as np
 
 #FLAGS---------------------------------------------------------------------
-save_reconstruction_images = 0
-save_embeddings = 1
-n_samples = 1590 #number of samples to reconstruct
+save_reconstruction_images = 1
+save_embeddings = 0
+n_samples = 3                             #number of samples to reconstruct
 
 #PARAMETERS----------------------------------------------------------------
 phase = 'validation'
-img_type = ''                 # '_gm' or empty
-hemisphere = ''          # '_left', '_right' or empty                                                 #root directory where code is located
-sufix = img_type + hemisphere
-data_dir = './data'
-file_pretrained = './resultados_hk/embedding_64_16x32x32_lr1e-04/'.format(sufix)           #ruta modelo que quiero importar
-pretrained_fname = './embedding_64/best_model.pt'
+data_dir = './data' 
+pretrained_path = './resultados_hk/deep/ADNI+OASIS_v1_16x32x32_lr1e-03/'     #ruta modelo que quiero importar
+#retrained_path = './resultados_hk/criterion_BCELoss/ADNI+OASIS_16x32x32_lr1e-04/'
+pretrained_fname = 'best_model.pt'
 batch_size = 1
-file_encoder = './config/conf_encoder_64.csv'                       #Configuración encoder
-file_decoder = './config/conf_decoder_64.csv'                       #Configuración decoder
-#csv_file_dataset = data_dir +  '/' + phase + '_MSU_cat12' + sufix + '.csv'   #Csv con ruta imágenes
-csv_file_dataset = data_dir +  '/MSU_v0_test.csv'   #Csv con ruta imágenes
-root_dir_dataset = data_dir + '/parches_cat12' + img_type          #Carpeta con imágenes
-results_dir = file_pretrained + 'reconstruction_OASIS' + sufix
+file_encoder = './config/conf_encoder_2.csv'                                 #Configuración encoder
+file_decoder = './config/conf_decoder_2.csv'                                 #Configuración decoder
+#csv_file_dataset = data_dir +  '/' + phase + '_MSU_cat12' + '.csv'
+csv_file_dataset = data_dir +  '/MSU_v0_test.csv'                            #Csv con ruta imágenes
+root_dir_dataset = data_dir + '/parches_cat12'                               #Carpeta con imágenes
+results_dir = pretrained_path + 'reconstruction'
 #--------------------------------------------------------------------------
 
 try:
@@ -44,32 +42,21 @@ except:
 prefix_ori_img = results_dir + '/original_' + phase + '_'        #Nombre archivo para guardar imagen original
 prefix_rec_img = results_dir + '/reconstruction_' + phase + '_'  #Nombre archivo para guardar imagen reconstruida por modelo
 prefix_sub_img = results_dir + '/substraction_' + phase + '_'    #Nombre archivo para guardar la resta entre original y reconstruccion
-file_pretrained = file_pretrained + pretrained_fname
+pretrained_path = pretrained_path + pretrained_fname
 
 #Autoencoder model loading
-dropout = 0
-lr = 1e-4
+#dropout = 0
+#lr = 1e-4
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 autoencoder = autoencoder.Autoencoder(file_encoder,file_decoder,0)
 autoencoder = autoencoder.cuda()
 
-try:
-    pretrained = torch.load(file_pretrained)
-except:
-    print('[WARNING] Pre-trained model not loaded')
-    pass
+autoencoder.load_from_best_model(pretrained_path)
 
-optimizer = optim.Adam(list(autoencoder.parameters()), lr=lr)
-scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True, patience=5, factor=0.5)
+#optimizer = optim.Adam(list(autoencoder.parameters()), lr=lr)
+#scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True, patience=5, factor=0.5)
 
-if pretrained is not None:
-    print('[INFO] Loading model...')
-    epoch=pretrained['epoch']
-    autoencoder.load_state_dict(pretrained['model_state_dict'])
-    optimizer.load_state_dict(pretrained['optimizer_state_dict'])
-    scheduler.load_state_dict(pretrained['scheduler_state_dict'])
-    epoch_loss=pretrained['loss']
 
 #Data loading
 kernel_size_maxpool = 2
@@ -132,4 +119,3 @@ if save_embeddings==1:
     hh_df.to_csv(results_dir+'/embeddings.csv', index=False, header=False)
     
 print('[INFO] Job done!')
-
