@@ -12,8 +12,8 @@ class projectSulcus(myProject.myProject):
     def __init__(self):
         super(projectSulcus,self).__init__()
 
-    def run(self, n_epochs, lr, batch_size, dim, patience, factor_patience, freeze, dropout, 
-            csv_train_path, csv_validation_path, config_encoder, config_decoder, 
+    def run(self, n_epochs, lr, batch_size, dim, h_size, patience, factor_patience, freeze,
+            dropout, csv_train_path, csv_validation_path, config_encoder, config_decoder, 
             ae_path, parches_dir, results_dir, crop_values=None, verbose=False):
 
         # create results directory
@@ -51,7 +51,7 @@ class projectSulcus(myProject.myProject):
         encoder.load_state_dict(encoder_dict)
 
         # Adding a fc layer
-        model = myNet.MyNet(pretrained=encoder,criterion=nn.BCELoss(),dropout=dropout,freeze=freeze)
+        model = myNet.MyNet(pretrained=encoder, h_size=h_size, criterion=nn.BCELoss(),dropout=dropout,freeze=freeze)
         model = model.cuda()
 
         model_optimizer = optim.Adam(list(model.parameters()), lr=lr)
@@ -59,7 +59,7 @@ class projectSulcus(myProject.myProject):
         model.set_optimizer(model_optimizer)
         model.set_scheduler(model_scheduler)
 
-        pppath = glob.glob(results_dir + "/checkpoint_epoch*.pt")
+        #pppath = glob.glob(results_dir + "/checkpoint_epoch*.pt")
         model.load_from_checkpoint_2(glob.glob(results_dir + "/checkpoint_epoch*.pt"))
 
         model.train_model(data_loaders=data_loaders,data_lengths=data_lengths,results_dir=results_dir,n_epochs=n_epochs,verbose=verbose)

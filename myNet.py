@@ -6,7 +6,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.metrics import accuracy_score
 
 class MyNet(myModule.myModule):
-    def __init__(self,pretrained,criterion,dropout=0.5,freeze = 'False'):
+    def __init__(self, pretrained, h_size, criterion, dropout=0.5, freeze = 'False'):
         super(MyNet, self).__init__(criterion=criterion)
         self.pretrained = pretrained
         self.aucs = {"train":[],"val":[]}
@@ -34,7 +34,7 @@ class MyNet(myModule.myModule):
                 param.requires_grad = True
 
         self.dropout1 = nn.Dropout(dropout)
-        self.fc1 = nn.Linear(128*2*4*4, 1) 
+        self.fc1 = nn.Linear(h_size, 1) 
         self.s = nn.Sigmoid()
 
     def forward(self, x):
