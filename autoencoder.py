@@ -70,10 +70,11 @@ class Decoder(nn.Module):
         self.blocks = nn.ModuleList()
         rows = conf_file.shape[0]
         
-        for i,j in conf_file.iterrows():
+        for i in range(rows-1):
           
             self.blocks.append(Block_decoder(conf_file.iloc[i,0], conf_file.iloc[i,1], conf_file.iloc[i,2], conf_file.iloc[i,3], prob_dropout=prob_dropout))
- 
+        i = rows-1
+        self.blocks.append(Block_decoder_final(conf_file.iloc[i,0], conf_file.iloc[i,1], conf_file.iloc[i,2], conf_file.iloc[i,3], prob_dropout=prob_dropout))
           
     
     def forward(self, input):
@@ -112,15 +113,15 @@ class Block_decoder(nn.Module):
 
 ###### Bloque decoder final######
         
-""" class Block_decoder_sigmoid(nn.Module):
+class Block_decoder_final(nn.Module):
     def __init__(self, in_channels_1, out_channels_1, in_channels_2, out_channels_2, kernel_size_conv1=3,kernel_size_conv2=3, prob_dropout=0):
-        super(Block_decoder_sigmoid,self).__init__()
+        super(Block_decoder_final,self).__init__()
         self.conv1 = nn.Conv3d(in_channels=in_channels_1, out_channels=out_channels_1, kernel_size=kernel_size_conv1, padding=1)
         self.conv2 = nn.Conv3d(in_channels=in_channels_2, out_channels=out_channels_2, kernel_size=kernel_size_conv2, padding=1)
         self.bn1 = nn.BatchNorm3d(out_channels_1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         self.bn2 = nn.BatchNorm3d(out_channels_2, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         self.dropout = nn.Dropout3d(p=prob_dropout)
-        self.s = nn.Sigmoid()
+        
 
     def forward(self, input):
         x_hat = input
@@ -129,10 +130,10 @@ class Block_decoder(nn.Module):
         x_hat = nn.functional.relu(x_hat)
         x_hat = self.conv2(x_hat)
         x_hat = self.dropout(x_hat)
-        x_hat = self.s(x_hat)
+        
        
         
-        return x_hat """
+        return x_hat
 
 #########################
 ###### Autoencoder ######
