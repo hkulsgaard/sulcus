@@ -62,7 +62,7 @@ class sulciDataset(Dataset):
         img = (img-min_)/(max_-min_)
         
         ####Cambio normalización#############
-        #img = (img - 0.5)/0.5
+        img = (img - 0.5)/0.5
         ####Cambio normalización#############
 
         #img=(img-mean_)/(std_)
