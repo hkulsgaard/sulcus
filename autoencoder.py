@@ -5,7 +5,6 @@ import myModule
 
 # Encoder
 
-# TODO: desharcodear la dimensión inicial
 
 #####################
 ###### Encoder ######
@@ -114,13 +113,12 @@ class Block_decoder(nn.Module):
 ###### Bloque decoder final######
         
 class Block_decoder_final(nn.Module):
-    def __init__(self, in_channels_1, out_channels_1, in_channels_2, out_channels_2, kernel_size_conv1=3,kernel_size_conv2=3, prob_dropout=0):
+    def __init__(self, in_channels_1, out_channels_1, in_channels_2, out_channels_2, kernel_size_conv1=3,kernel_size_conv2=1):
         super(Block_decoder_final,self).__init__()
         self.conv1 = nn.Conv3d(in_channels=in_channels_1, out_channels=out_channels_1, kernel_size=kernel_size_conv1, padding=1)
-        self.conv2 = nn.Conv3d(in_channels=in_channels_2, out_channels=out_channels_2, kernel_size=kernel_size_conv2, padding=1)
         self.bn1 = nn.BatchNorm3d(out_channels_1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        self.bn2 = nn.BatchNorm3d(out_channels_2, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        self.dropout = nn.Dropout3d(p=prob_dropout)
+        self.conv2 = nn.Conv3d(in_channels=in_channels_2, out_channels=out_channels_2, kernel_size=kernel_size_conv2, padding=1)
+                
         
 
     def forward(self, input):
@@ -129,7 +127,7 @@ class Block_decoder_final(nn.Module):
         x_hat = self.bn1(x_hat)
         x_hat = nn.functional.relu(x_hat)
         x_hat = self.conv2(x_hat)
-        x_hat = self.dropout(x_hat)
+        
         
        
         
