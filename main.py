@@ -4,7 +4,7 @@ import projectAE
 
 def main():
     ############### PARAMETERS ###############
-    n_epochs = 1                      # times to run the model on complete data
+    n_epochs = 150                      # times to run the model on complete data
     latent_variable_dim = 16            # latent vector dimension
     lr = 1e-4                           # learning_rate
     batch_size = 8                      # number of data points in each batch
@@ -16,9 +16,9 @@ def main():
 
     root_dir = './'                                                               #root directory where code is located
     sufix = img_type + hemisphere
-    results_dir = './resultados_hk/ADNI+OASIS_v1{}_{}x{}x{}_lr{:.0e}'.format(sufix,crop[0],crop[1],crop[2],lr)   #output directory for the results (created in root)
+    results_dir = './resultados_db/embedding_64/'                                 #output directory for the results (created in root)
 
-    data_dir = './data'                                                           #root directory where the CSV and the images are located
+    data_dir = '/deep/hkulsgaard/projects/sulcus/code/data'                                                           #root directory where the CSV and the images are located
     csv_train_path = data_dir + '/ADNI+OASIS_v1_train'+ sufix +'.csv'               #specific path for the CSV containing the train images names
     csv_validation_path =  data_dir + '/ADNI+OASIS_v1_validation' + sufix + '.csv'   #specific path for the CSV containing the validation images names
     parches_dir= data_dir + '/parches_cat12' + img_type
@@ -28,8 +28,8 @@ def main():
     #train the autoencoder
     pAE = projectAE.projectAE()
     pAE.run(n_epochs, latent_variable_dim, lr, batch_size, dim, csv_train_path,\
-            csv_validation_path, parches_dir, results_dir, './config/conf_encoder_2.csv',\
-            './config/conf_decoder_2.csv', crop, False)
+            csv_validation_path, parches_dir, results_dir, './config/conf_encoder_4.csv',\
+            './config/conf_decoder_4.csv', crop, False)
 
 if __name__ == '__main__':
     main()

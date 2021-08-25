@@ -27,13 +27,15 @@ class projectAE(myProject.myProject):
 
         #autoencoder creation
         criterion = nn.BCEWithLogitsLoss()
+
+
         ae = autoencoder.Autoencoder(conf_file_encoder=csv_config_encoder, conf_file_decoder=csv_config_decoder,\
                                                                     prob_dropout=0,criterion=criterion ,lr=lr)
         ae = ae.cuda()
         print(ae)
         summary(ae, (1,64,64,32))
         optimizer = optim.Adam(list(ae.parameters()), lr=lr)
-        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True, patience=6, factor=0.5) 
+        #scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True, patience=6, factor=0.5) 
         ae.set_optimizer(optimizer)
         ae.set_scheduler(scheduler)
 
