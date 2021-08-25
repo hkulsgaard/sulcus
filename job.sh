@@ -3,9 +3,9 @@
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --mem=8G
-#SBATCH --job-name=train_ae_mse_lr-3
+#SBATCH --job-name=train_ae_mse_lr-5
 #SBATCH --output=log_%x.out
-#SBATCH --gres=gpu:TU104:1
+#SBATCH --gres=gpu:GM200:1
 #SBATCH --qos=longrunning
 
 echo "SLURM_JOBID="$SLURM_JOBID
