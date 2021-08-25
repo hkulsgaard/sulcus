@@ -1,5 +1,6 @@
 import myProject
 import autoencoder
+from MSEWithLogitsLoss import MSEWithLogitsLoss
 from torchsummary import summary
 import glob
 import torch
@@ -10,6 +11,7 @@ class projectAE(myProject.myProject):
 
     def __init__(self):
         super(projectAE,self).__init__()
+
 
     def run(self, n_epochs, latent_variable_dim, lr, batch_size, dim,\
         csv_train_path, csv_validation_path, parches_dir, results_dir,\
@@ -26,7 +28,10 @@ class projectAE(myProject.myProject):
 
 
         #autoencoder creation
-        criterion = nn.BCEWithLogitsLoss()
+        #criterion = nn.BCEWithLogitsLoss()
+
+        criterion = MSEWithLogitsLoss()
+
 
 
         ae = autoencoder.Autoencoder(conf_file_encoder=csv_config_encoder, conf_file_decoder=csv_config_decoder,\
@@ -37,7 +42,7 @@ class projectAE(myProject.myProject):
         optimizer = optim.Adam(list(ae.parameters()), lr=lr)
         #scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True, patience=6, factor=0.5) 
         ae.set_optimizer(optimizer)
-        ae.set_scheduler(scheduler)
+        #ae.set_scheduler(scheduler)
 
         #checkpoint restoring
         ae.load_from_checkpoint_2(glob.glob(results_dir + "/checkpoint_epoch*.pt"))
@@ -46,3 +51,5 @@ class projectAE(myProject.myProject):
         ae.train_model(data_loaders=data_loaders, data_lengths=data_lengths,results_dir=results_dir,n_epochs=n_epochs,verbose=verbose)
 
         print('\n[INFO]Job done!\n')
+
+        
