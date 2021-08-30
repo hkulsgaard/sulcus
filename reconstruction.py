@@ -22,13 +22,11 @@ n_samples = 3                             #number of samples to reconstruct
 #PARAMETERS----------------------------------------------------------------
 phase = 'validation'
 data_dir = './data' 
-pretrained_path = './resultados_hk/deep/ADNI+OASIS_v1_16x32x32_lr1e-03/'     #ruta modelo que quiero importar
-#retrained_path = './resultados_hk/criterion_BCELoss/ADNI+OASIS_16x32x32_lr1e-04/'
+pretrained_path = './resultados_hk/delfi/embedding_64_mse_lr_1e-03/'     #ruta modelo que quiero importar
 pretrained_fname = 'best_model.pt'
 batch_size = 1
-file_encoder = './config/conf_encoder_2.csv'                                 #Configuración encoder
-file_decoder = './config/conf_decoder_2.csv'                                 #Configuración decoder
-#csv_file_dataset = data_dir +  '/' + phase + '_MSU_cat12' + '.csv'
+file_encoder = './config/conf_encoder_4.csv'                                 #Configuración encoder
+file_decoder = './config/conf_decoder_4.csv'                                 #Configuración decoder
 csv_file_dataset = data_dir +  '/MSU_v0_test.csv'                            #Csv con ruta imágenes
 root_dir_dataset = data_dir + '/parches_cat12'                               #Carpeta con imágenes
 results_dir = pretrained_path + 'reconstruction'

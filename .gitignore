@@ -137,5 +137,6 @@ resultados_hk/
 resultados_db/
 resultados_nn/
 pruebas/
+jobs/
 *prueba*.py
-main_ae_hk.py
+main*hk.py

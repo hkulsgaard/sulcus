@@ -35,7 +35,7 @@ class projectAE(myProject.myProject):
         print(ae)
         summary(ae, (1,64,64,32))
         optimizer = optim.Adam(list(ae.parameters()), lr=lr)
-        #scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True, patience=6, factor=0.5) 
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True, patience=6, factor=0.5)
         ae.set_optimizer(optimizer)
         ae.set_scheduler(scheduler)
 
