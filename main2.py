@@ -6,7 +6,7 @@ def main():
     ############### PARAMETERS ###############
     n_epochs = 150                      # times to run the model on complete data
     latent_variable_dim = 16            # latent vector dimension
-    lr = 1e-1                           # learning_rate
+    lr = 1e-5                           # learning_rate
     batch_size = 8                      # number of data points in each batch
     best_loss = 100
     dim = [32,64,64]                    # original image dimentions
@@ -16,7 +16,7 @@ def main():
 
     root_dir = './'                                                               #root directory where code is located
     sufix = img_type + hemisphere
-    results_dir = './resultados_db/embedding_32_mse_lr_1e-01/'                                 #output directory for the results (created in root)
+    results_dir = './resultados_db/embedding_32_mse_lr_1e-05/'                                 #output directory for the results (created in root)
 
     data_dir = '/deep/hkulsgaard/projects/sulcus/code/data'                                                           #root directory where the CSV and the images are located
     csv_train_path = data_dir + '/ADNI+OASIS_v1_train'+ sufix +'.csv'               #specific path for the CSV containing the train images names

@@ -21,13 +21,10 @@ import torch
 import autoencoder
 import os
 
-def loss(x,x_hat,tipo):
-    if tipo==1:
-      return torch.nn.functional.l1_loss(x_hat,x,reduction='mean')
-    elif tipo==2:
-      return torch.nn.functional.mse_loss(x_hat,x,reduction='mean')
-    else:
-      print('función de perdida no válida')
+def MSEWithLogitsLoss(output, target):
+    output = nn.functional.sigmoid(output)
+    loss = nn.functional.mse_loss(output,target)
+    return loss
 
 #####################################
 ###### cargar modelo guardado #######

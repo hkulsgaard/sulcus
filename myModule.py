@@ -20,12 +20,12 @@ class myModule(nn.Module):
         self.optimizer = optimizer
 
     #def set_scheduler(self,scheduler):
-    #    self.scheduler = scheduler
+        self.scheduler = scheduler
 
     def load_from_checkpoint(self, checkpoint=None):
             self.load_state_dict(checkpoint['model_state_dict'])
             self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-            #self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+            self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
             
             self.last_epoch = checkpoint['last_epoch']
             self.last_saved_epoch = checkpoint['last_saved_epoch']
@@ -41,7 +41,7 @@ class myModule(nn.Module):
 
             self.load_state_dict(checkpoint['model_state_dict'])
             self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-            #self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+            self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
             
             self.last_epoch = checkpoint['last_epoch']
             self.last_saved_epoch = checkpoint['last_saved_epoch']
@@ -60,7 +60,7 @@ class myModule(nn.Module):
 
             self.load_state_dict(best_model['model_state_dict'])
             self.optimizer.load_state_dict(best_model['optimizer_state_dict'])
-            #self.scheduler.load_state_dict(best_model['scheduler_state_dict'])
+            self.scheduler.load_state_dict(best_model['scheduler_state_dict'])
             
             self.last_epoch = best_model['last_epoch']
             self.losses = best_model['losses']
@@ -104,7 +104,7 @@ class myModule(nn.Module):
                 epoch_loss = running_loss / data_lengths[phase]
                 self.losses[phase].append(epoch_loss)
                 print('[INFO]Epoch #{} loss: {}'.format(epoch,epoch_loss))                                       
-                #self.scheduler.step(epoch_loss)
+                self.scheduler.step(epoch_loss)
 
                 #calculate metrics for training and validation
                 self.calculate_epoch_metrics(phase)
@@ -166,7 +166,7 @@ class myModule(nn.Module):
         checkpoint = {
             'model_state_dict': self.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
-            #'scheduler_state_dict': self.scheduler.state_dict(),
+            'scheduler_state_dict': self.scheduler.state_dict(),
             'learning_rate': self.lr,
             
             'last_epoch': epoch,
@@ -188,7 +188,7 @@ class myModule(nn.Module):
 
             'model_state_dict': self.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
-            #'scheduler_state_dict': self.scheduler.state_dict(),
+            'scheduler_state_dict': self.scheduler.state_dict(),
             'learning_rate': self.lr,
 
             'last_epoch': epoch,

@@ -11,7 +11,7 @@ def main():
     dim = [32,64,64]              # image dimentions
     h_size = 128*4*4*2             # embedding's size (128*4*4*2 or 64*2*2*1)
     patience = 5                  # in epoch units
-    factor_patience = 0
+    factor_patience = 0.5
     freeze = 'False'
     dropout = 0
 
