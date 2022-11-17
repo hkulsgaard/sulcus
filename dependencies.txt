@@ -1,0 +1,16 @@
+>Create the environment for conda
+conda create --name sulcus
+conda activate sulcus
+
+>To install Pytorch you need to follow this instructions -> https://pytorch.org/get-started/locally/
+conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+
+>Packages that you need to install for SULCUS project with conda:
+conda install --name sulcus -y --channel conda-forge nibabel torchio opencv matplotlib visdom openmpi torchinfo
+conda install --name sulcus -y --channel anaconda scikit-learn pandas numpy
+
+>Packages required for Jupyter
+conda install --name sulcus -y ipykernel --update-deps --force-reinstall
+
+>Commando for removing an environment
+conda remove --name <myenv> --all
