@@ -19,16 +19,46 @@ class Encoder(nn.Module):
         self.max_pool = nn.MaxPool3d(kernel_size=kernel_size_maxpool, stride=2, padding=0)
 
         for i,j in conf_file.iterrows():
-            self.blocks.append(Block_encoder(conf_file.iloc[i,0],conf_file.iloc[i,1],conf_file.iloc[i,2],conf_file.iloc[i,3],prob_dropout=prob_dropout))
+            self.blocks.append(Block_encoder(
+                conf_file.iloc[i,0],conf_file.iloc[i,1],conf_file.iloc[i,2],conf_file.iloc[i,3],prob_dropout=prob_dropout))
           
         
     def forward(self,input):
         h=input
-        for i in range(len(self.blocks)-1): 
+        for i in range(len(self.blocks)-1):
+            #print('[INFO] block {} -> h in shape: {}'.format(i,h.shape))
             h = self.blocks[i](h)
-            h = self.max_pool(h)   
+            #print('[INFO] block {} -> h block shape: {}'.format(i,h.shape))
+            h = self.max_pool(h)
+            #print('[INFO] block {} -> h maxpooled shape: {}'.format(i,h.shape))
+
+        #print('[INFO] block {} -> h in shape: {}'.format(i+1,h.shape))
         h = self.blocks[len(self.blocks)-1](h)
+        #print('[INFO] block {} -> h block shape: {}'.format(i+1,h.shape))
+
+        # ONLY FOR CAPTUM
+        # Cambia el shape del output
+        if False:
+            print('[INFO] original h out shape: {}'.format(h.shape)) #captum
+            h = h.view(-1, h.size(1)) #captum
+            print('[INFO] h out shape: {}'.format(h.shape)) #captum
+
         return h
+    
+    '''
+    def forward(self,input):
+        h=input
+        for i in range(len(self.blocks)):
+            #print('[INFO] block {} -> h in shape: {}'.format(i,h.shape))
+            h = self.blocks[i](h)
+            #print('[INFO] block {} -> h block shape: {}'.format(i,h.shape))
+            h = self.max_pool(h)
+            #print('[INFO] block {} -> h maxpooled shape: {}'.format(i,h.shape))
+
+        h = self.bn_out(h)
+
+        return h
+    '''
 
 
 
@@ -49,7 +79,7 @@ class Block_encoder(nn.Module):
         h = input
         h = self.conv1(h)
         h = self.bn1(h)
-        h = nn.functional.relu(h) 
+        h = nn.functional.relu(h)
         h = self.conv2(h)
         h = self.bn2(h)
         h = nn.functional.relu(h)
@@ -84,6 +114,17 @@ class Decoder(nn.Module):
             x_hat = self.blocks[i](x_hat)
         x_hat = self.blocks[len(self.blocks)-1](x_hat)
         return x_hat
+    
+    '''
+    def forward(self, input):
+        x_hat = input  
+        
+        for i in range(len(self.blocks)):
+            x_hat = nn.functional.interpolate(x_hat,scale_factor=(2,2,2),mode='trilinear')
+            x_hat = self.blocks[i](x_hat)
+
+        return x_hat
+    '''
 
 ###### Bloque decoder ######
         
@@ -163,4 +204,8 @@ class Autoencoder(myModule.myModule):
     def predict(self,input):
         h, x_hat = self(input)
         
-        return h, nn.functional.sigmoid(x_hat)
+        return h, x_hat
+    
+        # Si lo paso por la sigmoid, la reconstruccion toma valores que no corresponden
+        # Por ejemplo el background se convierte en 0.5
+        #return h, nn.functional.sigmoid(x_hat)
