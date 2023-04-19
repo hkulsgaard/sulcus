@@ -2,7 +2,7 @@
 
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=16G
+#SBATCH --mem=8G
 #SBATCH --job-name=train_ae
 #SBATCH --output=log_%x.out
 #SBATCH --gres=gpu:GM200:1
