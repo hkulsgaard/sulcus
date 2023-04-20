@@ -9,16 +9,16 @@ import projectSulcus
 def main():
 
     #run_sulcus
-    run_classification()
+    #run_classification()
     #run_captum()
     #run_reconstruction()
     #run_tsne()
-    #run_ae()
+    run_ae()
     
 
 def run_ae():
 #Train the autoencoder
-    n_epochs = 25                       # times to run the model on complete data
+    n_epochs = 50                       # times to run the model on complete data
     lr = 1e-2                           # learning_rate
     batch_size = 8                      # number of data points in each batch
     dim = [32,64,64]                    # original image dimentions [32,64,64]

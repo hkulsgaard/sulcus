@@ -2,6 +2,7 @@ import myProject
 import autoencoder
 from torchinfo import summary
 import glob
+import torch
 from torch import optim as optim
 from torch import nn as nn
 from torch.utils.data import DataLoader
