@@ -163,13 +163,15 @@ class projectAE(myProject.myProject):
                 baseline = torch.zeros(volume.shape).to(device)
                 ig = IntegratedGradients(self.ae.encoder)
                 for h_i in range(ftr_range[0],ftr_range[1]):
-                    attributions, delta = ig.attribute(volume, baseline, target=h_i, return_convergence_delta=True)
+                    attributions, delta = ig.attribute(volume, baseline, target=h_i, return_convergence_delta=True, additional_forward_args=True)
                     print('[INFO] attributions {}'.format(attributions.shape)) #captum
                     attri = attributions.view(-1, pdim[0], pdim[1], pdim[2]).cpu() #captum
                     slice_0 = attri[0, n_slice, :, :]
                     
+                    print("\n[INFO] Value range for the captum image:")
                     print(torch.min(slice_0))
                     print(torch.max(slice_0))
+                    print("[INFO] Value range for the original image:")
                     print(torch.min(img_0))
                     print(torch.max(img_0))
 

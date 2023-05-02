@@ -22,7 +22,9 @@ class Encoder(nn.Module):
                 conf_file.iloc[i,0],conf_file.iloc[i,1],conf_file.iloc[i,2],conf_file.iloc[i,3],prob_dropout=prob_dropout))
           
         
-    def forward(self,input):
+    def forward(self, input, cap=False):
+        #cap: argument for captum (enables flattening of the embedding)
+
         h=input
         for i in range(len(self.blocks)-1):
             #print('[INFO] block {} -> h in shape: {}'.format(i,h.shape))
@@ -35,9 +37,8 @@ class Encoder(nn.Module):
         h = self.blocks[len(self.blocks)-1](h)
         #print('[INFO] block {} -> h block shape: {}'.format(i+1,h.shape))
 
-        # ONLY FOR CAPTUM
-        # Cambia el shape del output
-        if False:
+        # ONLY FOR CAPTUM (flattens the embedding)
+        if cap:
             print('[INFO] original h out shape: {}'.format(h.shape)) #captum
             h = h.view(-1, h.size(1)) #captum
             print('[INFO] h out shape: {}'.format(h.shape)) #captum
@@ -83,14 +84,12 @@ class Decoder(nn.Module):
         self.blocks = nn.ModuleList()
         rows = conf_file.shape[0]
         
-        #for i in range(rows-1):
-        for i in conf_file.iterrows():
+        #for i,j in conf_file.iterrows():
+        for i in range(rows-1):
             self.blocks.append(Block_decoder(conf_file.iloc[i,0], conf_file.iloc[i,1], conf_file.iloc[i,2], conf_file.iloc[i,3], prob_dropout=prob_dropout))
 
-        #i = rows-1
-        #self.blocks.append(Block_decoder_final(conf_file.iloc[i,0], conf_file.iloc[i,1], conf_file.iloc[i,2], conf_file.iloc[i,3]))
-
-          
+        i = rows-1
+        self.blocks.append(Block_decoder_final(conf_file.iloc[i,0], conf_file.iloc[i,1], conf_file.iloc[i,2], conf_file.iloc[i,3]))
     
     def forward(self, input):
         x_hat = input  
@@ -187,8 +186,8 @@ class Autoencoder(myModule.myModule):
     def predict(self,input):
         h, x_hat = self(input)
         
-        return h, x_hat
-        #return h, nn.functional.sigmoid(x_hat)
+        #return h, x_hat (volver a esta???)
+        return h, nn.functional.sigmoid(x_hat)
     
         # Si lo paso por la sigmoid, la reconstruccion toma valores que no corresponden
         # Por ejemplo el background se convierte en 0.5
