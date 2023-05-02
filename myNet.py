@@ -28,25 +28,10 @@ class MyNet(myModule.myModule):
         else:
             self.s = nn.Softmax()
         
-        '''
-        # Clasificadores de 8 clases (para age)
-        self.net = nn.Sequential(
-            nn.Flatten(),
-            nn.Dropout(dropout),
-            nn.Linear(self.h_size, 8),
-            nn.Sigmoid())
-        '''
-        
         self.net = nn.Sequential(
             nn.Flatten(),
             nn.Dropout(),
-            nn.Linear(self.h_size,128),
-            nn.ReLU(),
-            nn.Dropout(),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Dropout(),
-            nn.Linear(64, 1),
+            nn.Linear(self.h_size, n_classes),
             nn.Sigmoid())
         
         

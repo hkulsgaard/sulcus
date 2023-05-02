@@ -63,12 +63,14 @@ class myProject():
             #axes[i].imshow(slice.T, cmaps[i], vmin=-1, vmax=1, origin="lower")
             max_val = 1
             if torch.min(slice.T) < 0:
-                min_val = -1
+                #min_val = -1
+                max_val = max([torch.max(slice), abs(torch.min(slice))])
+                min_val = -max_val
             else:
                 min_val = 0
                 
-            #axes[i].imshow(slice.T, cmaps[i], origin="lower", vmin = min_val, vmax = max_val)
-            axes[i].imshow(slice.T, cmaps[i], origin="lower")
+            axes[i].imshow(slice.T, cmaps[i], origin="lower", vmin = min_val, vmax = max_val)
+            #axes[i].imshow(slice.T, cmaps[i], origin="lower")
 
     def make_dir(self, results_dir):
         if not(os.path.exists(results_dir)):

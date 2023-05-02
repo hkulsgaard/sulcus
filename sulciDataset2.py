@@ -53,24 +53,23 @@ class sulciDataset(Dataset):
         device = "cpu"
 
         # Normalizar la imagen           
-        if False:
-            mean_ = np.mean(img)
-            std_ = np.std(img)
-            min_ = np.min(img)
-            max_ = np.max(img)
-            if max_ == 0:
-                print("[ERROR] img_name=" + img_name)
-                print("[INFO] idx=" + str(idx) + " | mean=" + str(mean_) + " | std=" + str(std_) + " | min=" + str(min_) +" | max=" + str(max_))
-            img = (img-min_)/(max_-min_)
-            
-            ####Cambio normalización#############
-            #img = (img - 0.5)/0.5
-            ####Cambio normalización#############
+        mean_ = np.mean(img)
+        std_ = np.std(img)
+        min_ = np.min(img)
+        max_ = np.max(img)
+        if max_ == 0:
+            print("[ERROR] img_name=" + img_name)
+            print("[INFO] idx=" + str(idx) + " | mean=" + str(mean_) + " | std=" + str(std_) + " | min=" + str(min_) +" | max=" + str(max_))
+        img = (img-min_)/(max_-min_)
+        
+        ####Cambio normalización#############
+        #img = (img - 0.5)/0.5
+        ####Cambio normalización#############
 
-            #img=(img-mean_)/(std_)
+        #img=(img-mean_)/(std_)
         
         # Binarizar la imagen
-        if True:
+        if False:
             img = np.where(img<0.5,0,1)
 
         img = torch.from_numpy(img).float().to(device)

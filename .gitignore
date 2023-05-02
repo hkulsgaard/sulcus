@@ -139,4 +139,4 @@ resultados_nn/
 pruebas/
 jobs/
 *prueba*.py
-main*hk.py
+main.py
