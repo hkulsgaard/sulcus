@@ -1,0 +1,5 @@
+input_channels_1,output_channels_1,input_channels_2,output_channels_2
+1,8,8,8
+8,16,16,16
+16,32,32,32
+32,32,32,32
