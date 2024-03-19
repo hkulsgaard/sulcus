@@ -1,0 +1,4 @@
+label,esto,es,un,e,n,c,a,b,e,z,a,d,o
+Probabilidad,0.7,0,0,0,0,0,0,0,0,0,0,0,0
+randomAffine,0.5,linear,0.5,0.5,0.5,0,0,0,0,0,0,0,0
+randomAffine,0.5,linear,0,0,0,7,7,7,0,0,0,0,0

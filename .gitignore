@@ -140,3 +140,6 @@ pruebas/
 jobs/
 *prueba*.py
 main.py
+my_config*
+*.pth
+*.pt

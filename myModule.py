@@ -64,9 +64,86 @@ class myModule(nn.Module):
         except Exception as e: 
             print('[INFO]Cannot load the model')
             print('[ERROR]',e)
+        
+        return best_model
 
+    def train_model(self, data_loaders, data_lengths, model_dir, n_epochs, preview_img=None, plotter=None, verbose=True):
+        #modificacion para que se parezca a resnet 15-8-2023
+        start_train = time.time()
+        for epoch in range(self.last_epoch+1, n_epochs+1):
+            
+            self.print_epoch_header(epoch)
+            start = time.time()
+            for phase in ['train','val']:
+                print('\n[INFO]Phase: {} in progress...'.format(phase))
+                
+                if phase == 'train':
+                    self.train()
+                else:
+                    self.eval()
 
-    def train_model(self, data_loaders, data_lengths, model_dir, n_epochs, verbose=True):
+                running_loss = 0.0
+                #self.scheduler.step()
+
+                for batch_data in data_loaders[phase]:
+                    b_images, b_labels = batch_data
+                    b_images = b_images.to(self.device)
+                    
+                    #self.optimizer.zero_grad()
+                    #loss = self.calculate_loss(b_images,b_labels,phase)
+                    #running_loss += loss.item()
+
+                    if phase == 'train':
+                        self.optimizer.zero_grad()
+                        loss = self.calculate_loss(b_images,b_labels,phase)
+
+                    else:
+                        with torch.no_grad():
+                            loss = self.calculate_loss(b_images,b_labels,phase)
+
+                    running_loss += loss.item()
+
+                    if verbose:
+                        print(loss.item())
+                
+                    if phase == 'train':
+                        loss.backward()
+                        self.optimizer.step()
+                
+                epoch_loss = running_loss / data_lengths[phase]
+                self.losses[phase].append(epoch_loss)
+                print('[INFO]Epoch #{} loss: {:.3f}'.format(epoch,epoch_loss))
+
+                #calculate metrics for training and validation
+                self.calculate_epoch_metrics(phase)
+
+                #shows epoch metrics in visdom
+                if not plotter==None:
+                    self.plot_epoch_metrics(phase, epoch, self.optimizer.param_groups[0]['lr'], preview_img, plotter)
+
+            self.scheduler.step(epoch_loss)
+
+            #save best model if we got better loss
+            self.save_best_model(epoch,epoch_loss,model_dir)
+                        
+            #save checkpoint for safety
+            self.save_checkpoint(epoch,epoch_loss,model_dir)
+            
+            #remove old checkpoint
+            self.delete_checkpoint(epoch=epoch-1,model_dir=model_dir)
+            
+            #save the losses plot
+            #plt.figure(0)
+            #self.build_plot(data=self.losses,data_name='Loss',model_dir=model_dir,verbose=False)
+
+            elapsed = time.time() - start
+            print('[TIME]Elapsed: {} sec ({:.1f} min)'.format(int(elapsed),float(elapsed/60)))
+
+        #play_finish_sound()
+        elapsed_total = time.time() - start_train
+        print('[INFO]Job done -> Total time: {} sec ({:.1f} min)'.format(int(elapsed_total),float(elapsed_total/60)))
+
+    def train_model2(self, data_loaders, data_lengths, model_dir, n_epochs, preview_img=None, plotter=None, verbose=True):
         
         start_train = time.time()
         for epoch in range(self.last_epoch+1, n_epochs+1):
@@ -86,9 +163,13 @@ class myModule(nn.Module):
                 for batch_data in data_loaders[phase]:
                     b_images, b_labels = batch_data
                     b_images = b_images.to(self.device)
-                    self.optimizer.zero_grad()
+                    if phase == 'train':
+                        self.optimizer.zero_grad()
+                        loss = self.calculate_loss(b_images,b_labels,phase)
 
-                    loss = self.calculate_loss(b_images,b_labels,phase)               
+                    else:
+                        with torch.no_grad():
+                            loss = self.calculate_loss(b_images,b_labels,phase)
                     
                     if verbose:
                         print(loss.item())
@@ -100,13 +181,16 @@ class myModule(nn.Module):
                 
                 epoch_loss = running_loss / data_lengths[phase]
                 self.losses[phase].append(epoch_loss)
-                print('[INFO]Epoch #{} loss: {:.3f}'.format(epoch,epoch_loss))                                       
-                #self.scheduler.step(epoch_loss)
+                print('[INFO]Epoch #{} loss: {:.3f}'.format(epoch,epoch_loss))
 
                 #calculate metrics for training and validation
                 self.calculate_epoch_metrics(phase)
 
-            self.scheduler.step(epoch_loss)# FIX revisar si esta bien acá el scheduler (deberia ir despues de validation entiendo)
+                #shows epoch metrics in visdom
+                if not plotter==None:
+                    self.plot_epoch_metrics(phase, epoch, self.optimizer.param_groups[0]['lr'], preview_img, plotter)
+
+            #self.scheduler.step(epoch_loss)
 
             #save best model if we got better loss
             self.save_best_model(epoch,epoch_loss,model_dir)
@@ -118,7 +202,8 @@ class myModule(nn.Module):
             self.delete_checkpoint(epoch=epoch-1,model_dir=model_dir)
             
             #save the losses plot
-            self.build_plot(data=self.losses,data_name='Loss',model_dir=model_dir,verbose=False)
+            #plt.figure(0)
+            #self.build_plot(data=self.losses,data_name='Loss',model_dir=model_dir,verbose=False)
 
             elapsed = time.time() - start
             print('[TIME]Elapsed: {} sec ({:.1f} min)'.format(int(elapsed),float(elapsed/60)))
@@ -127,9 +212,14 @@ class myModule(nn.Module):
         elapsed_total = time.time() - start_train
         print('[INFO]Job done -> Total time: {} sec ({:.1f} min)'.format(int(elapsed_total),float(elapsed_total/60)))
 
-    def build_plot(self,data,data_name,ylim=None,model_dir=None ,verbose=True):
+    def plot_preview_img(self, preview_img, plotter):
+        #place holder
+        return 0
+
+    def build_plot(self, data, data_name, ylim=None, model_dir=None, verbose=True):
         plt.plot(data['train'], color='#0b97e3')
         plt.plot(data['val'], color='#e3bb0b')
+        plt.grid()
         plt.legend(['Training '+data_name,'Validation '+data_name])
         plt.xlabel('Epoch')
         plt.ylabel(data_name)
@@ -141,7 +231,11 @@ class myModule(nn.Module):
         if verbose:
             plt.show()
         
-    def calculate_epoch_metrics(self,phase):
+    def calculate_epoch_metrics(self, phase):
+        #place holder
+        return 0
+    
+    def plot_metrics(self, phase, plotter):
         #place holder
         return 0
 
@@ -207,6 +301,10 @@ class myModule(nn.Module):
     def get_lr(self):
         for param_group in self.optimizer.param_groups:
             return param_group['lr']
+
+    def predict(self,input):
+    #place holder
+        return 0
 
     def print_epoch_header(self, epoch):
         print('\n---------------------------------')
