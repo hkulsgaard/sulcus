@@ -137,5 +137,8 @@ resultados_hk/
 resultados_db/
 resultados_nn/
 pruebas/
+delfi/
 *prueba*.py
 main.py
+my_config*
+*.pth
