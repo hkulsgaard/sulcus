@@ -142,3 +142,4 @@ delfi/
 main.py
 my_config*
 *.pth
+*.pt
