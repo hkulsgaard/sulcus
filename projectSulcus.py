@@ -297,52 +297,7 @@ class projectSulcus(myProject.myProject):
                                            os.path.split(config['classifier']['model_path'])[0],
                                            os.path.split(config['database']['dataset_path'])[1])
         
-        '''
-        #calibration curve for uncalibrated model
-        from sklearn.calibration import calibration_curve
-        prob_true, prob_pred = calibration_curve(labels, np.array(all_probs)[:,1], n_bins=10)
-        
-        plt.plot(prob_pred, prob_true, color='#0b97e3', marker='o')
-        plt.plot([0,0.5,1],[0,0.5,1], color='#aaaaaa', linestyle='dashed')
-        plt.grid()
-        plt.legend(['calibration curve','reference'])
-        plt.xlabel('Prediction')
-        plt.ylabel('Positive rate')
-        plt.show()
-
-        #Post-hoc Calibration for Classification
-        from netcal.scaling import TemperatureScaling
-
-        ground_truth = np.array(labels)
-        confidences = np.array(all_probs)
-        print(confidences)
-
-        temperature = TemperatureScaling()
-        temperature.fit(confidences, ground_truth)
-        calibrated = temperature.transform(confidences)
-
-        #Measuring Miscalibration for Classification
-        from netcal.metrics import ECE
-
-        n_bins = 10
-
-        ece = ECE(n_bins)
-        uncalibrated_score = ece.measure(confidences, ground_truth)
-        calibrated_score = ece.measure(calibrated, ground_truth)
-
-        print('[INFO] ECE unc:{} | ECE cal:{}'.format(uncalibrated_score,calibrated_score))
-        
-        #Visualizing Miscalibration for Classification
-        from netcal.presentation import ReliabilityDiagram
-
-        n_bins = 10
-
-        diagram = ReliabilityDiagram(n_bins)
-        a=diagram.plot(confidences, ground_truth)  # visualize miscalibration of uncalibrated
-        b=diagram.plot(calibrated, ground_truth)   # visualize miscalibration of calibrated
-
-        plt.show()
-        '''
+  
     def export_classification_results(self, fnames, labels, y_hats, probs0, probs1, results_dir, dataset_name):
         df_results= DataFrame(data={'fnames':fnames,
                                     'labels':labels,
