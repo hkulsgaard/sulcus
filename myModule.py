@@ -48,7 +48,7 @@ class myModule(nn.Module):
             print('[ERROR]',e)
             print()
 
-    def load_from_best_model(self, path):
+    def load_from_best_model(self, path, verbose=False):
         try:
             best_model = torch.load(path)
 
@@ -59,7 +59,8 @@ class myModule(nn.Module):
             self.last_epoch = best_model['last_epoch']
             self.losses = best_model['losses']
             self.best_loss = best_model['best_loss']
-            print('[INFO]Model loaded')
+            if verbose:
+                print('[INFO]Model loaded')
         
         except Exception as e: 
             print('[INFO]Cannot load the model')
