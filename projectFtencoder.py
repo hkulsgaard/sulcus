@@ -95,7 +95,7 @@ class projectFtencoder(myProject.myProject):
             dropout = 0,
             n_classes = 2,
             freeze = False)
-        model = model.cuda()
+        model = model.to(self.device)
         
         for param_name, param in model.named_parameters():
             param.requires_grad = True

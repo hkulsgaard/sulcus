@@ -153,9 +153,9 @@ class AutoencoderRN(autoencoder.Autoencoder):
 
         #originalmente es un argumento (acá hardcodeado)
         gpu_id = 0
-
+        
         os.environ["CUDA_VISIBLE_DEVICES"]=str(gpu_id)
-        model = model.cuda() 
+        model = model.to(self.device) 
         model = nn.DataParallel(model, device_ids=None)
 
         # load pretrain

@@ -33,7 +33,8 @@ class projectAE(myProject.myProject):
             filters = config['filters'],
             pre_h_shape = config['pre_h_shape'])
         
-        self.ae = self.ae.cuda()
+        
+        self.ae = self.ae.to(self.device)
         print(self.ae)
         
         optimizer = optim.Adam(list(self.ae.parameters()), lr=config['lr'])

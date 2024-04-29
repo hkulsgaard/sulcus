@@ -50,7 +50,7 @@ class myModule(nn.Module):
 
     def load_from_best_model(self, path, verbose=False):
         try:
-            best_model = torch.load(path)
+            best_model = torch.load(path, map_location=self.device)
 
             self.load_state_dict(best_model['model_state_dict'])
             self.optimizer.load_state_dict(best_model['optimizer_state_dict'])

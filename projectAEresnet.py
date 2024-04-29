@@ -14,7 +14,7 @@ class projectAEresnet(projectAE.projectAE):
         #autoencoder creation
         criterion = nn.BCEWithLogitsLoss()
         self.ae = autoencoderResnet.AutoencoderRN(criterion=criterion, pretrain_path=config.get('pretrain_path'), lr = config['lr'])
-        self.ae = self.ae.cuda()
+        self.ae = self.ae.to(self.device)
         print(self.ae)
         
         optimizer = optim.Adam(list(self.ae.parameters()), lr=config['lr'])

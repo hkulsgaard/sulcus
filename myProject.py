@@ -18,6 +18,7 @@ class myProject():
     def __init__(self):
         self.model = None
         self.current_fold = 0
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     def load_dataset(self, config):
         

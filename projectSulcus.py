@@ -151,11 +151,11 @@ class projectSulcus(myProject.myProject):
                 filters = config['filters'],
                 pre_h_shape = config['pre_h_shape'])
             
-        self.ae = self.ae.cuda()
+        self.ae = self.ae.to(self.device)
 
         # Take encoder layers
         #encoder = autoencoder.Encoder(config_encoder,2,0)
-        #encoder = encoder.cuda()
+        #encoder = encoder.to(self.device)
 
         # Optimizer
         optimizer = optim.Adam(list(self.ae.parameters()), lr=0.1)
@@ -189,7 +189,7 @@ class projectSulcus(myProject.myProject):
             dropout = config['dropout'],
             n_classes = config['n_classes'],
             freeze = config['freeze'])
-        self.model = self.model.cuda()
+        self.model = self.model.to(self.device)
         
         for param_name, param in self.model.named_parameters():
             param.requires_grad = True
@@ -498,7 +498,7 @@ class projectSulcus(myProject.myProject):
         sets.target_type = "normal"
         
         self.model, params = model_delfi.generate_model(sets)
-        self.model.cuda()
+        self.model.to(self.device)
         checkpoint = torch.load(config['model_path'])
         self.model.load_state_dict(checkpoint['state_dict'])
 
