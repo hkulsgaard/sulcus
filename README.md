@@ -19,7 +19,7 @@ git clone https://github.com/hkulsgaard/sulcus
 ```
 pip install -r requirements.txt
 ```
-- Download the trained Ft-encoder models [Google Drive](https://drive.google.com/drive/folders/1hs-ngCvNtts1BEapy77OtKGjqVBpYNfd?usp=sharing) and place it in `models` directory
+- Download the trained Ft-encoder models ([Google Drive](https://drive.google.com/drive/folders/1hs-ngCvNtts1BEapy77OtKGjqVBpYNfd?usp=sharing)) and place it in `models` directory
 
 
 ## Image preprocesing
@@ -93,4 +93,4 @@ This is an example of how the input patch should look:
   * First you have to follow the "[Installation](#installation)" section
   * After the installation, you can follow the instruction on the "[How to run prediction](How-to-run-prediction)" section
   * Configuration and Dataset files are provided as `config.yaml` and `dataset.csv` located in the `demo` directory
-  * Download the GM patches samples [Google Drive](https://drive.google.com/drive/folders/1UZfIUG00gDGM0ZMPfYQh8W-7hgyn2Yci?usp=sharing) and place it in the `demo` directory
+  * Download the GM patches samples ([Google Drive](https://drive.google.com/drive/folders/1UZfIUG00gDGM0ZMPfYQh8W-7hgyn2Yci?usp=sharing)) and place it in the `demo` directory
