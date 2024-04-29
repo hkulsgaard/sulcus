@@ -25,7 +25,7 @@ pip install -r requirements.txt
 ## Image preprocesing
 This clasification network takes as input patches of gray matter(GM) NIFTI images localized in the Frontal Operculum(FO). In order to perform the prediction, those images must be preprocessed:
 
-  1. The images must to be normalized using the MNI152 template as reference. The dimension and the spacing of the image must be 121x145x121 pixels and 1x1x1mm<sup>3</sup>, respectively. For the segmentation and normalization processes, we recommend using [CAT12.7 v1742](https://neuro-jena.github.io/cat/index.html#DOWNLOAD) plugin for [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/), implemented for the MATLAB Platform.
+  1. The images must to be normalized using the MNI152 template as reference. The dimension and the spacing of the image must be 121x145x121 pixels and 1.5x1.5x1.5mm<sup>3</sup>, respectively. For the segmentation and normalization processes, we recommend using [CAT12.7 v1742](https://neuro-jena.github.io/cat/index.html#DOWNLOAD) plugin for [SPM12](https://www.fil.ion.ucl.ac.uk/spm/software/spm12/), implemented for the MATLAB Platform.
 
   2. After that, FO patches must be extracted from the normalized GM segments. We provided a python script for this task called `crop_patches.py`. This can be executed in command line. A dialog box is going appear asking to select the NIFTI images to crop. Then, another window will appear asking for the output directory where the patches are going to be located. For every NIFTI image, 2 patches are going to be extracted, one from the right hemisphere and other for the left.
 
