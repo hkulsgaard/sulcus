@@ -94,3 +94,5 @@ This is an example of how the input patch should look:
   * After the installation, you can follow the instruction on the "[How to run prediction](How-to-run-prediction)" section
   * Configuration and Dataset files are provided as `config.yaml` and `dataset.csv` located in the `demo` directory
   * Download the GM patches samples ([Google Drive](https://drive.google.com/drive/folders/1UZfIUG00gDGM0ZMPfYQh8W-7hgyn2Yci?usp=sharing)) and place it in the `demo` directory
+  
+  > This GM patches were extracted from preprocessed images of the IXI dataset, available under the Creative Commons CC BY-SA 3.0 license. For more detailed information, refer to the [official website of IXI project](https://brain-development.org/ixi-dataset/)
