@@ -19,7 +19,7 @@ git clone https://github.com/hkulsgaard/sulcus
 ```
 pip install -r requirements.txt
 ```
-- Download the trained models (Google Drive) and put those in `models` directory
+- Download the trained Ft-encoder models [Google Drive](https://drive.google.com/drive/folders/1hs-ngCvNtts1BEapy77OtKGjqVBpYNfd?usp=sharing) and place it in `models` directory
 
 
 ## Image preprocesing
@@ -61,7 +61,7 @@ This is an example of how the input patch should look:
   - `model_dir:`Directory where the models are located. We provided 5 trained models located in the `models` directory
   - `models_fnames:`File names for each trained model, included the file extension. Those must be inside the `model_dir`
   
-  Here is an example of a YAML configuration file>
+  Here is an example of a YAML configuration file:
   ```
   patches_root_dir : .\demo
   dataset_path : .\demo\dataset.csv
@@ -93,5 +93,4 @@ This is an example of how the input patch should look:
   * First you have to follow the "[Installation](#installation)" section
   * After the installation, you can follow the instruction on the "[How to run prediction](How-to-run-prediction)" section
   * Configuration and Dataset files are provided as `config.yaml` and `dataset.csv` located in the `demo` directory
-  * GM patches samples can be [downloaded here](https://drive.google.com/drive/folders/1UZfIUG00gDGM0ZMPfYQh8W-7hgyn2Yci?usp=sharing). Place it in the `demo` directory
-  * Trained Ft-encoder models can be [downloaded here](https://drive.google.com/drive/folders/1hs-ngCvNtts1BEapy77OtKGjqVBpYNfd?usp=sharing). Place it in the `models` directory
+  * Download the GM patches samples [Google Drive](https://drive.google.com/drive/folders/1UZfIUG00gDGM0ZMPfYQh8W-7hgyn2Yci?usp=sharing) and place it in the `demo` directory
