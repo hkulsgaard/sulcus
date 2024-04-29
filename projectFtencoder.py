@@ -53,13 +53,11 @@ class projectFtencoder(myProject.myProject):
             if y_hat_sum > (n_models/2):
                 y_hat_majority = 1
                 y_hat_label = 'Diagonal Sulcus detected'
-                votes = y_hat_sum
             else:
                 y_hat_majority = 0
                 y_hat_label = 'Diagonal Sulcus NOT detected'
-                votes = n_models - y_hat_sum
 
-            certainty = round(votes/n_models,1)
+            certainty = round(abs((y_hat_sum*2-n_models)/n_models),1)
 
             # Store data about predictions
             data['fnames'].append(fname)
@@ -67,8 +65,7 @@ class projectFtencoder(myProject.myProject):
             data['certainty'].append(certainty)
 
             # Terminal output for predictions
-            print('[INFO]{}: {} (certainty:{}%) '.format(fname, y_hat_label, round(certainty*100),0))
-            #print('[INFO]{}: {} (positive votes:{}/{})'.format(fname, y_hat_label, y_hat_sum, n_models))
+            print('[INFO]{}: {} (certainty:{}) '.format(fname, y_hat_label, certainty))
             y_hat_sum
 
         # Export results
