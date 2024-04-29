@@ -194,13 +194,15 @@ class MyNet(myModule.myModule):
                 self.accuracies = best_model['accuracies']
                 self.baccs = best_model['baccs']
                 self.f1s = best_model['f1s']
-                print('[INFO]Best model restored-> Epoch:{} | Loss: {:.3f} | F1: {:.3f} | BAcc: {:.3f})'.format(
-                    self.last_epoch,
-                    self.losses['val'][-1],
-                    self.f1s['val'][-1],
-                    self.baccs['val'][-1]))
+                if verbose:
+                    print('[INFO]Best model restored-> Epoch:{} | Loss: {:.3f} | F1: {:.3f} | BAcc: {:.3f})'.format(
+                        self.last_epoch,
+                        self.losses['val'][-1],
+                        self.f1s['val'][-1],
+                        self.baccs['val'][-1]))
             except:
-                print('[INFO]Epoch {} | Loss:{:.3f}'.format(self.last_epoch, self.losses['val'][-1]))
+                if verbose:
+                    print('[INFO]Epoch {} | Loss:{:.3f}'.format(self.last_epoch, self.losses['val'][-1]))
 
         except Exception as e:
             print('[INFO]Cannot restore best model')
