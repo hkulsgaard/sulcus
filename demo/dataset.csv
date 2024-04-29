@@ -1,8 +1,8 @@
 wp1IXI012-HH_patch_right.nii,0,S001_right
-wp1IXI012-HH_patch_left.nii,1,S001_left
+wp1IXI012-HH_patch_left.nii,0,S001_left
 wp1IXI013-HH_patch_right.nii,0,S002_right
-wp1IXI013-HH_patch_left.nii,1,S002_left
-wp1IXI014-HH_patch_right.nii,1,S003_right
+wp1IXI013-HH_patch_left.nii,0,S002_left
+wp1IXI014-HH_patch_right.nii,0,S003_right
 wp1IXI014-HH_patch_left.nii,0,S003_left
 wp1IXI015-HH_patch_right.nii,0,S004_right
 wp1IXI015-HH_patch_left.nii,0,S004_left
