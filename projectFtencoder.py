@@ -38,7 +38,7 @@ class projectFtencoder(myProject.myProject):
             model.eval()
             self.models.append(model)
             if config['occlusion_maps']: ablators.append(Occlusion(model))
-            print('[INFO]Model loaded: "{}"'.format(model_fname))
+            print('[INFO]Loaded trained model: "{}"'.format(model_fname))
         
         print()
         n_models = (len(self.models))
@@ -162,7 +162,7 @@ class projectFtencoder(myProject.myProject):
             omap_pos_nii = nib.Nifti1Image(omap_pos, affine=metadata['affine'], header=metadata['header'])
             nib.save(omap_pos_nii, utils.addSufix(metadata['path'],'_[omap_positive_ftek{}_DS{}]'.format(k,y_hat)))
 
-            omap_neg = np.abs(omap.view(32, 64, 64).numpy())
-            omap_neg[omap_neg>0] = 0
+            omap_neg = (omap.view(32, 64, 64).numpy())*-1
+            omap_neg[omap_neg<0] = 0
             omap_neg_nii = nib.Nifti1Image(omap_neg, affine=metadata['affine'], header=metadata['header'])
-            nib.save(omap_neg_nii, utils.addSufix(metadata['path'],'_[omap_positive_ftek{}_DS{}]'.format(k,y_hat)))
+            nib.save(omap_neg_nii, utils.addSufix(metadata['path'],'_[omap_negative_ftek{}_DS{}]'.format(k,y_hat)))
