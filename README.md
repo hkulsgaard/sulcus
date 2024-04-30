@@ -60,7 +60,7 @@ This is an example of how the input patch should look:
   - `results_path:`Path and file name where the results are going to be saved as a CSV file
   - `model_dir:`Directory where the models are located. We provided 5 trained models located in the `models` directory
   - `models_fnames:`File names for each trained model, included the file extension. Those must be inside the `model_dir`
-  - `occlusion_maps:`Enables/disables occlusion maps generation (True or False). Be aware that this could take at least 1 hour per patch. Only recommended for research purposes.
+  - `occlusion_maps:`Enables/disables occlusion maps generation (True or False). Be aware that this process could be heavily CPU intensive and take at least 1 hour per patch. Only recommended for research purposes.
   
   > For more information about captum occlusion maps visit the [oficial website of Captum](https://captum.ai/docs/attribution_algorithms#occlusion)
 
