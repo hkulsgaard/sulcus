@@ -62,7 +62,7 @@ This is an example of how the input patch should look:
   - `models_fnames:`File names for each trained model, included the file extension. Those must be inside the `model_dir`
   - `occlusion_maps:`Enables/disables occlusion maps generation (True or False). Be aware that this process could be heavily CPU intensive and take at least 1 hour per patch. Only recommended for research purposes.
   
-  > For more information about captum occlusion maps visit the [oficial website of Captum](https://captum.ai/docs/attribution_algorithms#occlusion)
+  > For more information about captum occlusion maps visit the [official website of Captum](https://captum.ai/docs/attribution_algorithms#occlusion)
 
   Here is an example of a YAML configuration file:
   ```
