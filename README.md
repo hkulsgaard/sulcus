@@ -92,7 +92,7 @@ This is an example of how the input patch should look:
 
   <img src="assets/images/results.jpg" align=mid />
 
-  In case that the occlusion maps generation is enabled, 3 new NIFTI images will be generated. The first image is the positive and negative attributions for the prediction. The other 2 images are the attibutions but splited into positive and negative.
+  In case that the occlusion maps generation is enabled, 2 new NIFTI images will be generated. The first image contains the positive and negative attributions for the prediction. The second image is only the positive attributions.
 
 ## Run sample case
   * We providad a sample case for Diagonal Sulcus detection with a couple of sample images
