@@ -106,6 +106,11 @@ class sulciDataset(Dataset):
 
     def get_label(self,idx):
         return self.frame.iloc[idx,1]
+    
+    def get_metadata(self,idx):
+        path = os.path.join(self.root_dir, self.get_fpath(idx))
+        nii = nib.load(path)
+        return {'header':nii.header,'affine':nii.affine,'path':path}
 
     def get_crop_transformation(self, dim, crop_values):
         # crop_values = (sizeX,sizeY,sizeZ,offsetX,offsetY,offsetZ)

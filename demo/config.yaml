@@ -5,3 +5,4 @@ dataset_path : .\demo\dataset.csv
 results_path : .\demo\results.csv
 models_dir : .\models
 models_fnames : ['ftencoder_k1.pt','ftencoder_k2.pt','ftencoder_k3.pt','ftencoder_k4.pt','ftencoder_k5.pt']
+occlusion_maps: False

@@ -57,10 +57,13 @@ This is an example of how the input patch should look:
 
   - `patches_root_dir:`Root directory where the patches are located
   - `dataset_path:`Path where the CSV dataset file is located
-  - `results_path:`Path where the results are going to be saved as a CSV file
+  - `results_path:`Path and file name where the results are going to be saved as a CSV file
   - `model_dir:`Directory where the models are located. We provided 5 trained models located in the `models` directory
   - `models_fnames:`File names for each trained model, included the file extension. Those must be inside the `model_dir`
+  - `occlusion_maps:`Enables/disables occlusion maps generation (True or False). Be aware that this could take at least 1 hour per patch. Only recommended for research purposes.
   
+  > For more information about captum occlusion maps visit the [oficial website of Captum](https://captum.ai/docs/attribution_algorithms#occlusion)
+
   Here is an example of a YAML configuration file:
   ```
   patches_root_dir : .\demo
@@ -68,9 +71,10 @@ This is an example of how the input patch should look:
   results_path : .\demo\results.csv
   models_dir : .\models
   models_fnames : ['ftencoder_k1.pt','ftencoder_k2.pt','ftencoder_k3.pt','ftencoder_k4.pt','ftencoder_k5.pt']
+  occlusion_maps: False
   ```
 
-  > More information about YAML's sintax here `https://yaml.org/spec/1.2.2/`.
+  > For more information about YAML's sintax visit the [official website of YAML](https://yaml.org/spec/1.2.2/)
 
 
 ### Step 3. Execute sulcus prediction

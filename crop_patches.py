@@ -33,8 +33,10 @@ for path in file_paths:
 				  				 	 crop_range[2]:crop_range[3],
 								 	 crop_range[4]:crop_range[5]])
 
-		patch_nii = nib.Nifti1Image(patch_img, nii.affine, header)
-		patch_path = utils.replaceDir(utils.addSufix(path, '_' + suffix), output_dir)
+		#patch_nii = nib.Nifti1Image(patch_img, nii.affine, header)
+		patch_nii = nib.Nifti1Image(patch_img, affine=np.eye(4))
+  
+		patch_path = utils.replaceDir(utils.addSufix(path, '_patch_' + suffix), output_dir)
 		nib.save(patch_nii, patch_path)
 
 		print('[INFO]Patch cropped:"{}"'.format(patch_path))
